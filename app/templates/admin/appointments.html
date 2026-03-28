@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Citas — Admin{% endblock %}
+
+{% block content %}
+<div class="container-wide">
+  <div class="page-header">
+    <h1>Todas las citas</h1>
+    <a href="/admin" class="btn btn-ghost btn-sm">← Dashboard</a>
+  </div>
+
+  <!-- Filters -->
+  <form method="get" class="filters card" style="margin-bottom:1rem;">
+    <div class="form-group">
+      <label>Desde</label>
+      <input type="date" name="date_from" value="{{ filters.date_from }}">
+    </div>
+    <div class="form-group">
+      <label>Hasta</label>
+      <input type="date" name="date_to" value="{{ filters.date_to }}">
+    </div>
+    <div class="form-group">
+      <label>Estado</label>
+      <select name="status">
+        <option value="">Todos</option>
+        <option value="confirmed" {% if filters.status == 'confirmed' %}selected{% endif %}>Confirmadas</option>
+        <option value="completed" {% if filters.status == 'completed' %}selected{% endif %}>Completadas</option>
+        <option value="cancelled" {% if filters.status == 'cancelled' %}selected{% endif %}>Canceladas</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Cliente</label>
+      <input type="text" name="client" value="{{ filters.client }}" placeholder="Nombre o email">
+    </div>
+    <div class="form-group" style="align-self:flex-end">
+      <button type="submit" class="btn btn-primary">Filtrar</button>
+    </div>
+  </form>
+
+  {% if appointments %}
+  <div class="card table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Hora</th>
+          <th>Cliente</th>
+          <th>Servicio</th>
+          <th>Precio</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for a in appointments %}
+        <tr>
+          <td>{{ a.date }}</td>
+          <td>{{ a.start_time }} – {{ a.end_time }}</td>
+          <td>
+            <div style="font-weight:600">{{ a.client_name }}</div>
+            <div style="font-size:0.78rem;color:var(--text-muted)">{{ a.client_email }}</div>
+          </td>
+          <td>{{ a.service_name }}</td>
+          <td>{{ "%.0f"|format(a.price) }}€</td>
+          <td><span class="badge badge-{{ a.status }}">{{ a.status }}</span></td>
+          <td>
+            <div style="display:flex;gap:0.4rem;flex-wrap:wrap;">
+              {% if a.status == 'confirmed' %}
+              <form method="post" action="/admin/appointments/{{ a.id }}/status">
+                <input type="hidden" name="new_status" value="completed">
+                <button type="submit" class="btn btn-sm btn-ghost"
+                  onclick="return confirm('¿Marcar como completada?')">✓ Completar</button>
+              </form>
+              <form method="post" action="/admin/appointments/{{ a.id }}/status">
+                <input type="hidden" name="new_status" value="cancelled">
+                <button type="submit" class="btn btn-sm btn-danger"
+                  onclick="return confirm('¿Cancelar esta cita?')">✕ Cancelar</button>
+              </form>
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty">
+    <div class="icon">📋</div>
+    <p>No hay citas con estos filtros.</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Modificar cita — Vidal Barber{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1>Modificar cita</h1>
+
+  {% if error == 'ocupado' %}
+  <div class="alert alert-error">Ese horario ya está ocupado. Elige otro.</div>
+  {% elif error %}
+  <div class="alert alert-error">Error al procesar el cambio. Inténtalo de nuevo.</div>
+  {% endif %}
+
+  <!-- Step 1: Service -->
+  <div class="card">
+    <h2>1. Servicio</h2>
+    <div class="form-group" style="margin-bottom:0">
+      <select id="service-select">
+        {% for s in services %}
+        <option value="{{ s.id }}" {% if s.id == appt.service_id %}selected{% endif %}>
+          {{ s.name }} — {{ "%.0f"|format(s.price) }}€ ({{ s.duration_minutes }} min)
+        </option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+
+  <!-- Step 2: Date -->
+  <div class="card">
+    <h2>2. Elige el nuevo día</h2>
+    <div class="date-tabs" id="date-tabs">
+      {% for d in dates %}
+      <div class="date-tab{% if d.isoformat() == appt.date %} active{% endif %}" data-date="{{ d.isoformat() }}">
+        <div class="day-name">{{ ["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"][d.weekday()] }}</div>
+        <div class="day-num">{{ d.day }}</div>
+        <div class="day-name">{{ ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"][d.month-1] }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Step 3: Slot -->
+  <div class="card" id="slots-section" style="display:none">
+    <h2>3. Elige la nueva hora</h2>
+    <div class="slots-grid" id="slots-grid"></div>
+  </div>
+
+  <!-- Step 4: Confirm -->
+  <div class="card">
+    <h2>4. Confirmar cambio</h2>
+    <form method="post" action="/cita/{{ appt.token }}/editar" id="confirm-form">
+      <input type="hidden" name="target_date" id="input-date" value="{{ appt.date }}">
+      <input type="hidden" name="start_time" id="input-start" value="{{ appt.start_time }}">
+      <input type="hidden" name="service_id" id="input-service-id" value="{{ appt.service_id }}">
+      <button type="submit" class="btn btn-primary btn-full" id="confirm-btn">
+        Guardar cambios
+      </button>
+    </form>
+    <p style="margin-top:0.75rem;text-align:center;">
+      <a href="/cita/{{ appt.token }}" style="font-size:0.85rem;color:var(--text-muted);">← Volver sin cambios</a>
+    </p>
+  </div>
+</div>
+{% endblock %}
+
+{% block head %}
+<script>
+  // Pre-set selected values from current appointment
+  window._preselectedDate = "{{ appt.date }}";
+  window._preselectedSlot = "{{ appt.start_time }}";
+</script>
+{% endblock %}

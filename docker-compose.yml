@@ -1,0 +1,13 @@
+services:
+  peluqueria-citas:
+    build: .
+    container_name: peluqueria-citas
+    restart: unless-stopped
+    ports:
+      - "8095:8000"
+    volumes:
+      - ./data:/data
+    env_file:
+      - .env
+    environment:
+      - TZ=Europe/Madrid

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acceso administrador — Vidal Barber</title>
+  <link rel="icon" type="image/jpeg" href="/static/logo.jpg">
+  <link rel="stylesheet" href="/static/styles.css?v={{ css_v }}">
+</head>
+<body>
+<div class="auth-page">
+  <div class="auth-card">
+    <img class="auth-logo" src="/static/logo.jpg" alt="Vidal Barber">
+    <h1>Vidal Barber</h1>
+    <p class="auth-subtitle">Acceso administrador</p>
+
+    {% if error %}
+    <div class="alert alert-error">{{ error }}</div>
+    {% endif %}
+
+    <form method="post" action="/login">
+      <div class="form-group">
+        <label for="pin">Contraseña</label>
+        <input type="password" id="pin" name="pin" required autocomplete="current-password" placeholder="••••••••" autofocus>
+      </div>
+      <button type="submit" class="btn btn-primary btn-full">Entrar</button>
+    </form>
+
+    <p style="text-align:center; margin-top:1.25rem;">
+      <a href="/" style="font-size:0.68rem; color:var(--text-muted); letter-spacing:0.08em; text-transform:uppercase;">← Volver al inicio</a>
+    </p>
+  </div>
+</div>
+</body>
+</html>

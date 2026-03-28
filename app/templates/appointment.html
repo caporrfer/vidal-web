@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Mi cita — Vidal Barber{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  {% if booked %}
+  <div class="alert alert-success">¡Cita reservada! Recibirás la confirmación por email.</div>
+  {% endif %}
+  {% if request.query_params.get('edited') == '1' %}
+  <div class="alert alert-success">Cita modificada correctamente. Recibirás un email de confirmación.</div>
+  {% endif %}
+  {% if request.query_params.get('cancelled') == '1' %}
+  <div class="alert alert-error">Tu cita ha sido cancelada. Recibirás un email de confirmación.</div>
+  {% endif %}
+
+  <h1>Detalle de la cita</h1>
+
+  <div class="card">
+    <table style="width:100%;border-collapse:collapse;">
+      <tr>
+        <td style="padding:10px 0;color:var(--text-muted);width:40%;font-size:0.9rem;">Servicio</td>
+        <td style="padding:10px 0;font-weight:600;">{{ appt.service_name }}</td>
+      </tr>
+      <tr style="border-top:1px solid var(--border);">
+        <td style="padding:10px 0;color:var(--text-muted);font-size:0.9rem;">Fecha</td>
+        <td style="padding:10px 0;">{{ appt.date }}</td>
+      </tr>
+      <tr style="border-top:1px solid var(--border);">
+        <td style="padding:10px 0;color:var(--text-muted);font-size:0.9rem;">Hora</td>
+        <td style="padding:10px 0;">{{ appt.start_time }} – {{ appt.end_time }}</td>
+      </tr>
+      {% if appt.price %}
+      <tr style="border-top:1px solid var(--border);">
+        <td style="padding:10px 0;color:var(--text-muted);font-size:0.9rem;">Precio</td>
+        <td style="padding:10px 0;">{{ "%.0f"|format(appt.price) }}€</td>
+      </tr>
+      {% endif %}
+      <tr style="border-top:1px solid var(--border);">
+        <td style="padding:10px 0;color:var(--text-muted);font-size:0.9rem;">Nombre</td>
+        <td style="padding:10px 0;">{{ appt.client_name }}</td>
+      </tr>
+      <tr style="border-top:1px solid var(--border);">
+        <td style="padding:10px 0;color:var(--text-muted);font-size:0.9rem;">Email</td>
+        <td style="padding:10px 0;">{{ appt.client_email }}</td>
+      </tr>
+      {% if appt.client_phone %}
+      <tr style="border-top:1px solid var(--border);">
+        <td style="padding:10px 0;color:var(--text-muted);font-size:0.9rem;">Teléfono</td>
+        <td style="padding:10px 0;">{{ appt.client_phone }}</td>
+      </tr>
+      {% endif %}
+      <tr style="border-top:1px solid var(--border);">
+        <td style="padding:10px 0;color:var(--text-muted);font-size:0.9rem;">Estado</td>
+        <td style="padding:10px 0;"><span class="badge badge-{{ appt.status }}">{{ appt.status }}</span></td>
+      </tr>
+      {% if appt.notes %}
+      <tr style="border-top:1px solid var(--border);">
+        <td style="padding:10px 0;color:var(--text-muted);font-size:0.9rem;">Notas</td>
+        <td style="padding:10px 0;">{{ appt.notes }}</td>
+      </tr>
+      {% endif %}
+    </table>
+  </div>
+
+  {% if can_modify %}
+  <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:1rem;">
+    <a href="/cita/{{ appt.token }}/editar" class="btn btn-primary">Modificar cita</a>
+    <a href="/cita/{{ appt.token }}/cancelar" class="btn btn-danger">Cancelar cita</a>
+  </div>
+  {% elif appt.status == 'confirmed' %}
+  <div class="alert alert-error" style="margin-top:1rem;">
+    No es posible modificar ni cancelar esta cita porque faltan menos de 24 horas.
+  </div>
+  {% endif %}
+
+  <p style="margin-top:1.5rem;">
+    <a href="/book" class="btn btn-ghost">Reservar otra cita</a>
+  </p>
+
+</div>
+{% endblock %}

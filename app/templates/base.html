@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Vidal Barber{% endblock %}</title>
+  <link rel="icon" type="image/jpeg" href="/static/logo.jpg">
+  <link rel="stylesheet" href="/static/styles.css?v={{ css_v }}">
+  {% block head %}{% endblock %}
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="/">
+    <img class="nav-brand-logo" src="/static/logo.jpg" alt="Vidal Barber">
+    <span class="nav-brand-text">Vidal Barber</span>
+  </a>
+  <div class="nav-links">
+    <a href="/book">Reservar</a>
+    {% if user and user.role == 'admin' %}
+      <a href="/admin">Panel</a>
+      <a href="/admin/appointments">Citas</a>
+      <a href="/logout">Salir</a>
+    {% endif %}
+  </div>
+</nav>
+
+{% block content %}{% endblock %}
+
+<footer class="site-footer">
+  <div style="margin-bottom:0.6rem;">
+    <strong>Vidal Barber</strong>
+  </div>
+  Reservas online con cita previa &nbsp;·&nbsp; © 2025
+</footer>
+
+<script src="/static/app.js?v={{ css_v }}"></script>
+</body>
+</html>

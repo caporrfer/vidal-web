@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Panel Admin{% endblock %}
+
+{% block content %}
+<div class="container-wide">
+  <div class="page-header">
+    <h1>Panel de administración</h1>
+    <span style="color:var(--text-muted); font-size:0.9rem;">{{ today }}</span>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="num">{{ stats.today_count or 0 }}</div>
+      <div class="label">Hoy</div>
+    </div>
+    <div class="stat-card">
+      <div class="num">{{ stats.upcoming or 0 }}</div>
+      <div class="label">Próximas</div>
+    </div>
+    <div class="stat-card">
+      <div class="num">{{ stats.cancelled or 0 }}</div>
+      <div class="label">Canceladas</div>
+    </div>
+  </div>
+
+  <h2>Citas de hoy</h2>
+  {% if today_appointments %}
+  <div class="timeline">
+    {% for a in today_appointments %}
+    <div class="timeline-item">
+      <div class="timeline-time">{{ a.start_time }}</div>
+      <div class="timeline-info">
+        <div class="timeline-name">{{ a.client_name }}</div>
+        <div class="timeline-service">{{ a.service_name }} · {{ a.duration_minutes }} min
+          {% if a.phone %} · 📞 {{ a.phone }}{% endif %}
+        </div>
+      </div>
+      <span class="badge badge-{{ a.status }}">{{ a.status }}</span>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty">
+    <div class="icon">🗓️</div>
+    <p>No hay citas para hoy.</p>
+  </div>
+  {% endif %}
+
+  <div style="margin-top:1.5rem; display:flex; gap:0.75rem; flex-wrap:wrap;">
+    <a href="/admin/appointments" class="btn btn-ghost">Ver todas las citas</a>
+    <a href="/admin/services" class="btn btn-ghost">Gestionar servicios</a>
+    <a href="/admin/schedule" class="btn btn-ghost">Horarios especiales</a>
+  </div>
+</div>
+{% endblock %}

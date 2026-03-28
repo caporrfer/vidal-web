@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block title %}Vidal Barber — Peluquería con cita previa{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-bg">
+    <div class="hero-bg-text">BARBER</div>
+  </div>
+
+  <div class="hero-inner">
+    <div class="hero-logo-wrap">
+      <div class="hero-logo-ring"></div>
+      <div class="hero-logo-ring-2"></div>
+      <img class="hero-logo" src="/static/logo.jpg" alt="Vidal Barber">
+    </div>
+
+    <p class="hero-eyebrow">Peluquería · Barbería · Estilo</p>
+    <h1 class="hero-brand">VIDAL<br>BARBER</h1>
+    <span class="hero-brand-sub">con cita previa</span>
+
+    <div class="hero-rule"><div class="hero-rule-diamond"></div></div>
+
+    <p class="hero-tagline">Tu barbería de confianza. Reserva tu cita en segundos, sin esperas ni llamadas.</p>
+
+    <div class="hero-cta-wrap">
+      <a href="/book" class="btn btn-primary btn-lg">Reservar cita</a>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Servicios -->
+  <div>
+    <div class="ornament"><div class="ornament-diamond"></div></div>
+    <h2 class="section-heading">Nuestros Servicios</h2>
+    <p class="section-sub">Todos los tratamientos para que estés siempre a punto</p>
+
+    <div class="services-grid">
+      {% for s in services %}
+      <div class="service-card animate-in">
+        <div class="service-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/>
+            <line x1="20" y1="4" x2="8.12" y2="15.88"/>
+            <line x1="14.47" y1="14.48" x2="20" y2="20"/>
+            <line x1="8.12" y1="8.12" x2="12" y2="12"/>
+          </svg>
+        </div>
+        <div class="service-name">{{ s.name }}</div>
+        <div class="price">{{ "%.0f"|format(s.price) }}€</div>
+        <div class="duration">{{ s.duration_minutes }} min</div>
+      </div>
+      {% else %}
+      <p style="color:var(--text-muted); grid-column:1/-1; text-align:center; padding:2rem;">No hay servicios disponibles.</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Cómo funciona -->
+  <div class="steps-section">
+    <div class="ornament"><div class="ornament-diamond"></div></div>
+    <h2 class="section-heading">¿Cómo funciona?</h2>
+    <p class="section-sub">Reservar tu cita es muy sencillo</p>
+
+    <div class="steps-grid">
+      <div class="step-card animate-in">
+        <div class="step-number">I</div>
+        <div class="step-title">Elige el servicio</div>
+        <div class="step-desc">Corte, tinte, barba… selecciona lo que necesites con su duración y precio.</div>
+      </div>
+      <div class="step-card animate-in">
+        <div class="step-number">II</div>
+        <div class="step-title">Elige fecha y hora</div>
+        <div class="step-desc">Consulta los huecos disponibles en tiempo real y elige el que mejor te venga.</div>
+      </div>
+      <div class="step-card animate-in">
+        <div class="step-number">III</div>
+        <div class="step-title">¡Listo, te esperamos!</div>
+        <div class="step-desc">Recibirás la confirmación por email con un enlace para modificar o cancelar si cambias de planes.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Horario -->
+  <div class="schedule-block">
+    <div class="ornament"><div class="ornament-diamond"></div></div>
+    <h2 class="section-heading">Horario</h2>
+    <p class="section-sub">Abierto de lunes a sábado, con cita previa</p>
+
+    <div class="schedule-rows">
+      <div class="schedule-row">
+        <span class="schedule-day">Lunes – Viernes</span>
+        <span class="schedule-hours">10:00 – 14:00 &nbsp;·&nbsp; 16:00 – 20:30</span>
+      </div>
+      <div class="schedule-row">
+        <span class="schedule-day">Sábado</span>
+        <span class="schedule-hours">10:00 – 14:00</span>
+      </div>
+      <div class="schedule-row">
+        <span class="schedule-day">Domingo</span>
+        <span class="schedule-closed">Cerrado</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

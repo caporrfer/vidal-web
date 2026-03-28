@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Servicios — Admin{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="page-header">
+    <h1>Servicios</h1>
+    <a href="/admin" class="btn btn-ghost btn-sm">← Dashboard</a>
+  </div>
+
+  {% if success %}
+  <div class="alert alert-success">Servicio añadido correctamente.</div>
+  {% endif %}
+
+  <!-- Add service -->
+  <div class="card" style="margin-bottom:1.5rem">
+    <h2>Añadir servicio</h2>
+    <form method="post" action="/admin/services">
+      <div style="display:grid;grid-template-columns:1fr 120px 120px;gap:0.75rem;align-items:end">
+        <div class="form-group" style="margin-bottom:0">
+          <label>Nombre</label>
+          <input type="text" name="name" required placeholder="Ej: Corte de pelo">
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label>Duración (min)</label>
+          <input type="number" name="duration_minutes" required min="15" step="15" value="30">
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label>Precio (€)</label>
+          <input type="number" name="price" required min="0" step="0.5" value="15">
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary" style="margin-top:1rem">Añadir</button>
+    </form>
+  </div>
+
+  <!-- List -->
+  <div class="card table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Duración</th>
+          <th>Precio</th>
+          <th>Estado</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in services %}
+        <tr style="{% if not s.active %}opacity:0.5{% endif %}">
+          <td style="font-weight:600">{{ s.name }}</td>
+          <td>{{ s.duration_minutes }} min</td>
+          <td>{{ "%.2f"|format(s.price) }}€</td>
+          <td>
+            <span class="badge {{ 'badge-confirmed' if s.active else 'badge-cancelled' }}">
+              {{ 'Activo' if s.active else 'Inactivo' }}
+            </span>
+          </td>
+          <td>
+            <form method="post" action="/admin/services/{{ s.id }}/toggle">
+              <button type="submit" class="btn btn-ghost btn-sm"
+                onclick="return confirm('¿Cambiar estado del servicio?')">
+                {{ 'Desactivar' if s.active else 'Activar' }}
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
