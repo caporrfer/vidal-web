@@ -17,6 +17,7 @@ Aplicación web para gestionar citas de una peluquería. Permite a los clientes 
 | Sesión OAuth | Starlette SessionMiddleware (cookie `session`) |
 | Sesión auth | itsdangerous (cookie `auth_token`) — nombre distinto para evitar conflicto con SessionMiddleware |
 | Estilos | CSS puro, mobile-first, tema oscuro |
+| Tipografía | `Cormorant Garamond` (display) + `DM Sans` (body) — Google Fonts |
 | Despliegue | Docker + Docker Compose en Raspberry Pi |
 
 ## Estructura de ficheros
@@ -81,16 +82,22 @@ peluqueria-citas/
 | Campo | Tipo | Descripción |
 |-------|------|-------------|
 | id | INTEGER PK | |
-| user_id | INTEGER FK | Referencia a users |
+| user_id | INTEGER FK nullable | Referencia a users — NULL para reservas públicas sin login |
 | service_id | INTEGER FK | Referencia a services |
 | date | TEXT | YYYY-MM-DD |
 | start_time | TEXT | HH:MM |
 | end_time | TEXT | HH:MM |
 | status | TEXT | `confirmed`, `cancelled`, `completed` |
 | notes | TEXT | Notas opcionales |
+| client_name | TEXT | Nombre del cliente (reservas sin login) |
+| client_email | TEXT | Email del cliente |
+| client_phone | TEXT | Teléfono del cliente |
+| token | TEXT | Token único para gestión sin login (ver/cancelar/editar) |
 | created_at / updated_at | TEXT | ISO 8601 |
 
 Restricción `UNIQUE(date, start_time)` para prevenir doble reserva.
+
+> **Importante**: `user_id` es nullable. Las reservas públicas (sin login) tienen `user_id = NULL` e identifican al cliente por `client_name/email/phone`. `models.py` incluye una migración automática al arranque que corrige la constraint `NOT NULL` si la BD fue creada con el esquema antiguo.
 
 ### Tabla `schedule_overrides`
 Permite marcar días festivos o cambiar el horario de un día concreto.
@@ -113,12 +120,13 @@ Slots generados automáticamente cada 30 minutos (configurable por servicio). La
 | GET/POST | `/register` | Registro de cliente con email |
 | GET | `/auth/google` | Inicia flujo OAuth con Google |
 | GET | `/auth/google/callback` | Callback OAuth — crea usuario si no existe |
-| GET | `/book` | Página de reserva (requiere sesión) |
+| GET | `/book` | Página de reserva pública (sin login) |
 | GET | `/api/slots` | Slots disponibles en JSON (AJAX) |
-| POST | `/book` | Crear cita |
-| GET | `/my-appointments` | Citas del cliente |
-| POST | `/cancel/{id}` | Cancelar cita (solo >24h antes) |
-| GET | `/admin` | Dashboard admin |
+| POST | `/book` | Crear cita (sin login, datos de cliente en formulario) |
+| GET | `/cita/{token}` | Ver cita por token |
+| GET/POST | `/cita/{token}/editar` | Editar cita (solo si >24h) |
+| GET/POST | `/cita/{token}/cancelar` | Cancelar cita (solo si >24h) |
+| GET | `/admin` | Dashboard admin con reloj en tiempo real |
 | GET | `/admin/appointments` | Listado con filtros |
 | POST | `/admin/appointments/{id}/status` | Cambiar estado |
 | GET/POST | `/admin/services` | CRUD servicios |
@@ -179,6 +187,14 @@ cloudflared tunnel --url http://localhost:8095 --no-autoupdate &
 ```
 
 Tras lanzarlo, actualizar `.env` con la URL generada y rebuildar. La URL cambia cada vez que se relanza.
+
+## Dashboard admin — detalles
+
+- Reloj en tiempo real (JS, actualización cada segundo) con hora, día de semana, día, mes y año
+- `font-variant-numeric: tabular-nums` para que los dígitos no salten al cambiar
+- Estadísticas del día: citas totales, restantes, completadas, próximas
+- Timeline de citas de hoy con estado visual (pasada/actual/futura)
+- Strip de próximos 7 días con carga AJAX al hacer clic
 
 ## Pendiente
 

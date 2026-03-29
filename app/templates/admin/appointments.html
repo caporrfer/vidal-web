@@ -5,7 +5,7 @@
 <div class="container-wide">
   <div class="page-header">
     <h1>Todas las citas</h1>
-    <a href="/admin" class="btn btn-ghost btn-sm">← Dashboard</a>
+    <a href="/admin" class="btn btn-ghost btn-sm">Panel</a>
   </div>
 
   <!-- Filters -->
@@ -53,27 +53,25 @@
       <tbody>
         {% for a in appointments %}
         <tr>
-          <td>{{ a.date }}</td>
-          <td>{{ a.start_time }} – {{ a.end_time }}</td>
-          <td>
+          <td data-label="Fecha">{{ a.date }}</td>
+          <td data-label="Hora">{{ a.start_time }} – {{ a.end_time }}</td>
+          <td data-label="Cliente">
             <div style="font-weight:600">{{ a.client_name }}</div>
             <div style="font-size:0.78rem;color:var(--text-muted)">{{ a.client_email }}</div>
           </td>
-          <td>{{ a.service_name }}</td>
-          <td>{{ "%.0f"|format(a.price) }}€</td>
-          <td><span class="badge badge-{{ a.status }}">{{ a.status }}</span></td>
-          <td>
+          <td data-label="Servicio">{{ a.service_name }}</td>
+          <td data-label="Precio">{{ "%.0f"|format(a.price) }}&euro;</td>
+          <td data-label="Estado"><span class="badge badge-{{ a.status }}">{{ a.status }}</span></td>
+          <td data-label="">
             <div style="display:flex;gap:0.4rem;flex-wrap:wrap;">
               {% if a.status == 'confirmed' %}
               <form method="post" action="/admin/appointments/{{ a.id }}/status">
                 <input type="hidden" name="new_status" value="completed">
-                <button type="submit" class="btn btn-sm btn-ghost"
-                  onclick="return confirm('¿Marcar como completada?')">✓ Completar</button>
+                <button type="submit" class="btn btn-sm btn-ghost" data-confirm="Marcar como completada?">Completar</button>
               </form>
               <form method="post" action="/admin/appointments/{{ a.id }}/status">
                 <input type="hidden" name="new_status" value="cancelled">
-                <button type="submit" class="btn btn-sm btn-danger"
-                  onclick="return confirm('¿Cancelar esta cita?')">✕ Cancelar</button>
+                <button type="submit" class="btn btn-sm btn-danger" data-confirm="Cancelar esta cita?">Cancelar</button>
               </form>
               {% endif %}
             </div>
@@ -85,7 +83,6 @@
   </div>
   {% else %}
   <div class="empty">
-    <div class="icon">📋</div>
     <p>No hay citas con estos filtros.</p>
   </div>
   {% endif %}

@@ -4,7 +4,7 @@ from typing import Optional
 from zoneinfo import ZoneInfo
 
 from fastapi import FastAPI, Request, Form, HTTPException
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
@@ -441,8 +441,11 @@ def admin_dashboard(request: Request):
     if not user:
         return RedirectResponse("/login", status_code=302)
 
-    today = datetime.now(TZ).date().isoformat()
+    now = datetime.now(TZ)
+    today = now.date().isoformat()
+    now_time = now.strftime("%H:%M")
     conn = get_db()
+
     today_appointments = conn.execute(
         _APPT_QUERY + " WHERE a.date = ? AND a.status != 'cancelled' ORDER BY a.start_time",
         (today,),
@@ -456,7 +459,58 @@ def admin_dashboard(request: Request):
            FROM appointments""",
         (today, today),
     ).fetchone()
+
+    remaining_today = conn.execute(
+        "SELECT COUNT(*) as c FROM appointments WHERE date = ? AND status = 'confirmed' AND start_time > ?",
+        (today, now_time),
+    ).fetchone()["c"]
+
+    completed_today = conn.execute(
+        "SELECT COUNT(*) as c FROM appointments WHERE date = ? AND status = 'completed'",
+        (today,),
+    ).fetchone()["c"]
+
+    # Next 7 days summary for week strip
+    week_end = (now.date() + timedelta(days=7)).isoformat()
+    week_rows = conn.execute(
+        """SELECT date, COUNT(*) as count
+           FROM appointments
+           WHERE date > ? AND date <= ? AND status != 'cancelled'
+           GROUP BY date ORDER BY date""",
+        (today, week_end),
+    ).fetchall()
     conn.close()
+
+    day_names_es = ["Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom"]
+    week_summary = []
+    for i in range(1, 8):
+        d = now.date() + timedelta(days=i)
+        d_iso = d.isoformat()
+        count = 0
+        for row in week_rows:
+            if row["date"] == d_iso:
+                count = row["count"]
+                break
+        week_summary.append({
+            "date": d_iso,
+            "day_name": day_names_es[d.weekday()],
+            "day_num": d.day,
+            "count": count,
+        })
+
+    # Find current or next appointment
+    current_appt = None
+    for a in today_appointments:
+        if a["start_time"] <= now_time < a["end_time"] and a["status"] == "confirmed":
+            current_appt = dict(a)
+            current_appt["_is_now"] = True
+            break
+    if not current_appt:
+        for a in today_appointments:
+            if a["start_time"] > now_time and a["status"] == "confirmed":
+                current_appt = dict(a)
+                current_appt["_is_now"] = False
+                break
 
     return templates.TemplateResponse("admin/dashboard.html", {
         "request": request,
@@ -464,8 +518,42 @@ def admin_dashboard(request: Request):
         "today_appointments": today_appointments,
         "stats": stats,
         "today": today,
+        "today_date_obj": now.date(),
+        "now_time": now_time,
+        "remaining_today": remaining_today,
+        "completed_today": completed_today,
+        "week_summary": week_summary,
+        "current_appt": current_appt,
         "css_v": css_version(),
     })
+
+
+@app.get("/admin/api/day")
+def admin_api_day(request: Request, date: str = ""):
+    user = require_admin_user(request)
+    if not user:
+        return JSONResponse({"error": "unauthorized"}, status_code=401)
+    if not date:
+        return JSONResponse({"error": "date required"}, status_code=400)
+    conn = get_db()
+    appointments = conn.execute(
+        _APPT_QUERY + " WHERE a.date = ? AND a.status != 'cancelled' ORDER BY a.start_time",
+        (date,),
+    ).fetchall()
+    conn.close()
+    result = []
+    for a in appointments:
+        result.append({
+            "id": a["id"],
+            "start_time": a["start_time"],
+            "end_time": a["end_time"],
+            "client_name": a["client_name"],
+            "client_phone": a["client_phone"],
+            "service_name": a["service_name"],
+            "duration_minutes": a["duration_minutes"],
+            "status": a["status"],
+        })
+    return JSONResponse(result)
 
 
 @app.get("/admin/appointments", response_class=HTMLResponse)

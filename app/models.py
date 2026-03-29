@@ -24,6 +24,39 @@ def init_db():
     conn = get_db()
     c = conn.cursor()
 
+    # Check if appointments table exists and needs migration
+    tables = c.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='appointments'").fetchone()
+    if tables:
+        # Table exists, check if user_id is NOT NULL
+        table_info = c.execute("PRAGMA table_info(appointments)").fetchall()
+        user_id_col = next((col for col in table_info if col[1] == 'user_id'), None)
+        if user_id_col and user_id_col[3] == 1:  # col[3] = notnull flag
+            # user_id is NOT NULL, need to migrate
+            c.executescript("""
+                CREATE TABLE appointments_temp AS SELECT * FROM appointments;
+                DROP TABLE appointments;
+                CREATE TABLE appointments (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    user_id INTEGER REFERENCES users(id),
+                    service_id INTEGER NOT NULL REFERENCES services(id),
+                    date TEXT NOT NULL,
+                    start_time TEXT NOT NULL,
+                    end_time TEXT NOT NULL,
+                    status TEXT NOT NULL DEFAULT 'confirmed',
+                    notes TEXT,
+                    created_at TEXT NOT NULL,
+                    updated_at TEXT,
+                    client_name TEXT,
+                    client_email TEXT,
+                    client_phone TEXT,
+                    token TEXT,
+                    UNIQUE(date, start_time)
+                );
+                INSERT INTO appointments SELECT * FROM appointments_temp;
+                DROP TABLE appointments_temp;
+            """)
+            conn.commit()
+
     c.executescript("""
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -46,7 +79,7 @@ def init_db():
 
         CREATE TABLE IF NOT EXISTS appointments (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL REFERENCES users(id),
+            user_id INTEGER REFERENCES users(id),
             service_id INTEGER NOT NULL REFERENCES services(id),
             date TEXT NOT NULL,
             start_time TEXT NOT NULL,
@@ -55,6 +88,10 @@ def init_db():
             notes TEXT,
             created_at TEXT NOT NULL,
             updated_at TEXT,
+            client_name TEXT,
+            client_email TEXT,
+            client_phone TEXT,
+            token TEXT,
             UNIQUE(date, start_time)
         );
 
