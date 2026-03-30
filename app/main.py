@@ -76,17 +76,9 @@ def _build_dates():
 @app.get("/", response_class=HTMLResponse)
 def index(request: Request):
     user = get_admin_from_session(request)
-    conn = get_db()
-    services = conn.execute(
-        "SELECT * FROM services WHERE active = 1 ORDER BY price"
-    ).fetchall()
-    conn.close()
-    return templates.TemplateResponse("index.html", {
-        "request": request,
-        "user": user,
-        "services": services,
-        "css_v": css_version(),
-    })
+    if user and user["role"] == "admin":
+        return RedirectResponse("/admin", status_code=302)
+    return RedirectResponse("/book", status_code=302)
 
 
 @app.get("/login", response_class=HTMLResponse)

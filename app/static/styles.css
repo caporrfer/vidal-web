@@ -43,7 +43,16 @@ html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 
 body {
   font-family: var(--font-body);
-  background: var(--bg);
+  background-color: #080808;
+  background-image:
+    radial-gradient(ellipse 140% 55% at 50% 0%, rgba(212,168,67,0.06) 0%, transparent 100%),
+    repeating-linear-gradient(
+      -45deg,
+      transparent 0px,
+      transparent 14px,
+      rgba(212,168,67,0.11) 14px,
+      rgba(212,168,67,0.11) 15px
+    );
   color: var(--text);
   font-size: 15px;
   line-height: 1.65;
@@ -60,7 +69,7 @@ body::after {
   inset: -50%;
   width: 200%; height: 200%;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  opacity: 0.022;
+  opacity: 0.035;
   pointer-events: none;
   z-index: 9999;
   animation: grain 6s steps(1) infinite;
