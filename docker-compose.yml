@@ -1,13 +1,7 @@
 services:
-  peluqueria-citas:
+  vidal-barber:
     build: .
-    container_name: peluqueria-citas
+    container_name: vidal-barber
     restart: unless-stopped
     ports:
-      - "8095:8000"
-    volumes:
-      - ./data:/data
-    env_file:
-      - .env
-    environment:
-      - TZ=Europe/Madrid
+      - "8095:80"
