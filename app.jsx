@@ -4,7 +4,7 @@ const { useState, useEffect, useMemo, useRef } = React;
 const SERVICES = [
   { id:"corte",   n:"01", name:"Corte Clásico",   desc:"Corte con tijera y máquina. Acabado a medida.", price:12, dur:30 },
   { id:"fade",    n:"02", name:"Fade Premium",    desc:"Degradado de precisión, contorno y styling.",   price:20, dur:45 },
-  { id:"barba",   n:"03", name:"Barba & Perfilado",desc:"Ritual de afeitado con toallas calientes.",    price:12, dur:30 },
+  { id:"barba",   n:"03", name:"Barba & Perfilado",desc:"Afeitado clásico con perfilado a navaja.",    price:15, dur:30 },
   { id:"combo",   n:"04", name:"Corte + Barba",   desc:"La experiencia completa Vidal. Lo recomendado.",price:28, dur:60 }
 ];
 
@@ -86,14 +86,13 @@ function ClientSite({ appts, setAppts, onGoAdmin, tweaks }) {
       <div className="nav">
         <div className="nav-inner">
           <div className="brand">
-            <img src="assets/logo.png" alt="" style={{width:34,height:34,objectFit:"contain",filter:"invert(1) contrast(1.1)"}} />
+            <img src={window.__resources.logo} alt="" style={{width:34,height:34,objectFit:"contain",filter:"invert(1) contrast(1.1)"}} />
             <span className="brand-name">Vidal Barber</span>
           </div>
           <div className="nav-links">
             <button onClick={()=>scrollTo("services")}>Servicios</button>
             <button onClick={()=>scrollTo("booking")}>Reservar</button>
             <button onClick={()=>scrollTo("gallery")}>Trabajos</button>
-            <button onClick={()=>scrollTo("about")}>Estudio</button>
             <button onClick={onGoAdmin} style={{color:"var(--muted)"}}>Admin</button>
           </div>
           <div style={{display:"flex",gap:10,alignItems:"center"}}>
@@ -113,7 +112,6 @@ function ClientSite({ appts, setAppts, onGoAdmin, tweaks }) {
             <button onClick={()=>scrollTo("services")}>Servicios</button>
             <button onClick={()=>scrollTo("booking")}>Reservar cita</button>
             <button onClick={()=>scrollTo("gallery")}>Trabajos</button>
-            <button onClick={()=>scrollTo("about")}>El estudio</button>
             <button onClick={onGoAdmin} style={{fontSize:18,color:"var(--muted)",fontFamily:"'JetBrains Mono',monospace",letterSpacing:".2em",textTransform:"uppercase",borderBottom:0,paddingTop:28}}>→ Acceso peluquero</button>
           </nav>
         </div>
@@ -125,8 +123,8 @@ function ClientSite({ appts, setAppts, onGoAdmin, tweaks }) {
         <div className="hero-copy">
           <div>
             <div className="hero-eyebrow"><span className="dot"></span>Abierto hoy · 10:00 — 14:00 · 16:00 — 20:30</div>
-            <h1 className="hero-title">Hecho a <em>mano</em>,<br/>pensado <span className="hero-slash"></span>para ti</h1>
-            <p className="hero-tag">Una barbería de autor en el corazón de Huelva. Cortes de precisión, barba clásica y una experiencia tranquila donde todo se cuida — desde la primera toalla caliente hasta el último detalle del contorno.</p>
+            <h1 className="hero-title">Precisión en <em>cada</em><br/>corte <span className="hero-slash"></span>para ti</h1>
+            <p className="hero-tag">Una barbería de autor en el corazón de Huelva. Cortes de precisión, barba clásica y una experiencia tranquila donde todo se cuida — desde el primer corte de navaja hasta el último detalle del contorno.</p>
             <div className="hero-actions">
               <button className="btn-primary" onClick={()=>scrollTo("booking")}>Reservar cita<I.arrow/></button>
               <button className="btn-ghost" onClick={()=>scrollTo("services")}>Ver servicios</button>
@@ -139,10 +137,8 @@ function ClientSite({ appts, setAppts, onGoAdmin, tweaks }) {
           </div>
         </div>
         <div className="hero-visual">
-          <img src="assets/shop.jpg" alt="Estudio Vidal Barber" />
-          <div className="hero-tape"><span className="live"></span>En directo · silla libre en 25′</div>
+          <img src={window.__resources.shop} alt="Vidal Barber" />
           <div className="hero-caption">
-            <span>Nº 001 — El estudio</span>
             <span>C. Dulce Nombre de María · 5</span>
           </div>
         </div>
@@ -154,19 +150,37 @@ function ClientSite({ appts, setAppts, onGoAdmin, tweaks }) {
           {[...Array(2)].map((_,i)=>(
             <React.Fragment key={i}>
               <span>Precisión</span><span>Oficio</span><span>Hombre moderno</span>
-              <span>Toalla caliente</span><span>Navaja</span><span>Estilo propio</span>
+              <span>Detalle</span><span>Navaja</span><span>Estilo propio</span>
               <span>Sin prisas</span><span>Sin prisas</span>
             </React.Fragment>
           ))}
         </div>
       </div>
 
+      {/* GALLERY */}
+      <section id="gallery" className="block">
+        <div className="block-head">
+          <div>
+            <div className="block-num">Trabajos</div>
+            <h2 className="block-title">Trabajos <em>recientes</em></h2>
+          </div>
+          <div className="block-sub">Instagram · @vidal.barber</div>
+        </div>
+        <div className="gallery">
+          <div className="g-item g-1"><img src={window.__resources.cut1} alt=""/><span className="tag">Platinum Fade</span></div>
+          <div className="g-item g-2"><img src={window.__resources.shop} alt=""/><span className="tag">Vidal Barber</span></div>
+          <div className="g-item g-3"><img src={window.__resources.cut2} alt=""/><span className="tag">Fringe texture</span></div>
+          <div className="g-item g-4"><img src={window.__resources.cut3} alt=""/><span className="tag">Barba clásica</span></div>
+          <div className="g-item g-5"><img src={window.__resources.cut1} alt=""/><span className="tag">Skin fade</span></div>
+        </div>
+      </section>
+
       {/* SERVICES */}
       <section id="services" className="block">
         <div className="block-head">
           <div>
-            <div className="block-num">— 01 / Servicios</div>
-            <h2 className="block-title">Elige tu <em>ritual</em></h2>
+            <div className="block-num">Servicios</div>
+            <h2 className="block-title">Elige tu <em>corte</em></h2>
           </div>
           <div className="block-sub" style={{maxWidth:320,textTransform:"none",letterSpacing:"normal",fontSize:14}}>
             Selecciona un servicio para pre-llenar tu reserva. Los tiempos y precios incluyen styling.
@@ -193,7 +207,7 @@ function ClientSite({ appts, setAppts, onGoAdmin, tweaks }) {
       <section id="booking" className="block" style={{paddingTop:0}} ref={bookRef}>
         <div className="block-head">
           <div>
-            <div className="block-num">— 02 / Agenda</div>
+            <div className="block-num">Agenda</div>
             <h2 className="block-title">Reserva en <em>tres pasos</em></h2>
           </div>
           <div className="block-sub">Fecha · Hora · Datos</div>
@@ -208,57 +222,17 @@ function ClientSite({ appts, setAppts, onGoAdmin, tweaks }) {
         />
       </section>
 
-      {/* GALLERY */}
-      <section id="gallery" className="block">
-        <div className="block-head">
-          <div>
-            <div className="block-num">— 03 / Trabajos</div>
-            <h2 className="block-title">Trabajos <em>recientes</em></h2>
-          </div>
-          <div className="block-sub">Instagram · @vidal.barber</div>
-        </div>
-        <div className="gallery">
-          <div className="g-item g-1"><img src="assets/cut-1.jpg" alt=""/><span className="tag">001 — Platinum Fade</span></div>
-          <div className="g-item g-2"><img src="assets/shop.jpg" alt=""/><span className="tag">002 — El estudio</span></div>
-          <div className="g-item g-3"><img src="assets/cut-2.jpg" alt=""/><span className="tag">003 — Fringe texture</span></div>
-          <div className="g-item g-4"><img src="assets/cut-3.jpg" alt=""/><span className="tag">004 — Barba clásica</span></div>
-          <div className="g-item g-5"><img src="assets/cut-1.jpg" alt=""/><span className="tag">005 — Skin fade</span></div>
-        </div>
-      </section>
-
-      {/* ABOUT */}
-      <section id="about" className="block">
-        <div className="block-head">
-          <div>
-            <div className="block-num">— 04 / Estudio</div>
-            <h2 className="block-title">El <em>estudio</em></h2>
-          </div>
-        </div>
-        <div className="about">
-          <div className="about-text">
-            <p>Vidal Barber nace de la obsesión por el oficio y la calma. Un espacio pequeño, reservado, donde cada cita se vive sin prisa.</p>
-            <p>Trabajamos con navaja, tijera y máquina — pero, sobre todo, con atención. Nos tomamos el tiempo de entender el cabello, la cara y el día a día de cada cliente para proponer un corte que funcione durante semanas.</p>
-          </div>
-          <div className="about-list">
-            <div className="row"><span className="k">Martes — Viernes</span><span className="v">10:00 — 14:00 · 16:00 — 20:30</span><span className="s open">Abierto</span></div>
-            <div className="row"><span className="k">Sábado</span><span className="v">10:00 — 14:00</span><span className="s open">Abierto</span></div>
-            <div className="row"><span className="k">Domingo · Lunes</span><span className="v">Cerrado</span><span className="s">—</span></div>
-            <div className="row"><span className="k">Dirección</span><span className="v">C. Dulce Nombre de María, 5</span><span className="s">21002 Huelva</span></div>
-            <div className="row"><span className="k">Teléfono</span><span className="v">642 13 47 30</span><span className="s">WhatsApp</span></div>
-          </div>
-        </div>
-      </section>
 
       <footer className="foot">
         <div className="foot-brand">V — B</div>
         <div>© 2026 Vidal Barber · Todos los derechos reservados</div>
         <div style={{display:"flex",gap:18}}>
-          <a>Instagram</a><a>Google Maps</a><a onClick={onGoAdmin} style={{cursor:"pointer"}}>Acceso peluquero</a>
+          <a>Instagram</a><a href="https://maps.app.goo.gl/7kQb7Q8JQ1EdydFD9?g_st=ic" target="_blank" rel="noopener noreferrer">Google Maps</a><a onClick={onGoAdmin} style={{cursor:"pointer"}}>Acceso peluquero</a>
         </div>
       </footer>
 
       {tweaks.showWhatsapp && (
-        <a className="wa" title="WhatsApp" href="#" onClick={e=>{e.preventDefault();alert("Se abriría WhatsApp en +34 930 142 087")}}>
+        <a className="wa" title="WhatsApp" href="https://wa.me/34642134730" target="_blank" rel="noopener noreferrer">
           <I.wa/>
         </a>
       )}
@@ -272,7 +246,7 @@ function ClientSite({ appts, setAppts, onGoAdmin, tweaks }) {
 function Booking({ service, appts, onConfirm }) {
   const today = new Date(); today.setHours(0,0,0,0);
   const [cursor, setCursor] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
-  const [selDate, setSelDate] = useState(null);
+  const [selDate, setSelDate] = useState(new Date(today));
   const [selTime, setSelTime] = useState(null);
   const [form, setForm] = useState({name:"",email:"",phone:""});
   const [errs, setErrs] = useState({});
@@ -481,8 +455,7 @@ function SuccessOverlay({ appt, onClose }) {
         <h3>Cita confirmada</h3>
         <p>Gracias <strong style={{color:"var(--cream)"}}>{appt.name.split(" ")[0]}</strong>. Te esperamos el <br/><em style={{fontFamily:"'Bodoni Moda',serif"}}>{prettyDate(d)} a las {appt.time}</em><br/>para tu <strong style={{color:"var(--cream)"}}>{svc.name}</strong>. Recibirás un recordatorio por email y WhatsApp.</p>
         <div className="actions">
-          <button className="btn-ghost" onClick={onClose}>Cerrar</button>
-          <button className="btn-primary" onClick={onClose}>Añadir al calendario<I.arrow/></button>
+          <button className="btn-primary" onClick={onClose}>Cerrar</button>
         </div>
         <div className="ref">Ref · {appt.id.toUpperCase()} — Vidal Barber</div>
       </div>
@@ -561,15 +534,17 @@ function Admin({ appts, setAppts, onExit }) {
       <div className="admin-top">
         <div className="admin-title">
           <div className="brand">
-            <img src="assets/logo.png" alt="" style={{width:28,height:28,objectFit:"contain",filter:"invert(1)"}}/>
-            <span className="brand-name" style={{fontSize:12}}>Vidal Barber</span>
+            <img src={window.__resources.logo} alt="" style={{width:28,height:28,objectFit:"contain",filter:"invert(1)"}}/>
+            <span className="brand-name" style={{fontSize:14}}>Vidal Barber</span>
           </div>
-          <span className="tag">Panel interno</span>
         </div>
-        <div style={{display:"flex",gap:10,alignItems:"center"}}>
-          <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:11,color:"var(--muted)",letterSpacing:".15em",textTransform:"uppercase"}}>Sesión · Vidal</span>
-          <button className="btn-ghost" onClick={onExit}>Salir al sitio</button>
-        </div>
+        <button className="btn-ghost" onClick={onExit} style={{fontSize:13,padding:"8px 14px"}}>Salir</button>
+      </div>
+
+      <div className="stat-bar">
+        <div className="stat-item"><span className="stat-val">{stats.hoy}</span><span className="stat-lbl">Hoy</span></div>
+        <div className="stat-item"><span className="stat-val">{stats.prox}</span><span className="stat-lbl">Próximas</span></div>
+        <div className="stat-item"><span className="stat-val">{stats.euros}€</span><span className="stat-lbl">Caja</span></div>
       </div>
 
       <div className="admin-tabs">
@@ -577,50 +552,39 @@ function Admin({ appts, setAppts, onExit }) {
         <button className={"admin-tab"+(tab==="cal"?" active":"")} onClick={()=>setTab("cal")}>Calendario</button>
       </div>
 
-      <div className="admin-body">
-        <div className="stat-stack">
-          <div className="stat"><div className="k">Hoy</div><div className="v">{stats.hoy}</div><div className="d">Citas programadas</div></div>
-          <div className="stat"><div className="k">Próximas</div><div className="v">{stats.prox}</div><div className="d">7 días</div></div>
-          <div className="stat"><div className="k">Caja hoy</div><div className="v">{stats.euros}€</div><div className="d">Estimado</div></div>
-        </div>
-
+      <div className="admin-content">
         {tab==="list" ? (
-          <div className="appts">
-            <div className="appts-head">
-              <h3>Citas</h3>
-              <div className="filters">
-                {[["today","Hoy"],["tomorrow","Mañana"],["upcoming","Próximas"],["done","Completadas"],["all","Todas"]].map(([k,l])=>(
-                  <button key={k} className={filter===k?"on":""} onClick={()=>setFilter(k)}>{l}</button>
-                ))}
-              </div>
+          <div>
+            <div className="filters">
+              {[["today","Hoy"],["tomorrow","Mañana"],["upcoming","Próximas"],["done","Hechas"],["all","Todas"]].map(([k,l])=>(
+                <button key={k} className={filter===k?"on":""} onClick={()=>setFilter(k)}>{l}</button>
+              ))}
             </div>
             {filtered.length===0 ? (
               <div className="empty">No hay citas en esta vista.</div>
-            ) : filtered.map(a=>{
+            ) : <div className="appt-list">{filtered.map(a=>{
               const svc = SERVICES.find(s=>s.id===a.service);
               const d = new Date(a.date+"T"+a.time);
               return (
-                <div key={a.id} className={"appt"+(a.status==="done"?" done":"")}>
-                  <div className="when">
-                    <div className="d">{pad(d.getDate())}</div>
-                    <div className="t">{MONTH_ES[d.getMonth()].slice(0,3).toUpperCase()} · {a.time}</div>
+                <div key={a.id} className={"appt-card"+(a.status==="done"?" done":"")}>
+                  <div className="appt-row-top">
+                    <div className="appt-time">{a.time}</div>
+                    <div className="appt-date">{pad(d.getDate())} {MONTH_ES[d.getMonth()].slice(0,3)}</div>
+                    <div className={"appt-badge "+(a.status==="upcoming"?"up":"dn")}>
+                      {a.status==="upcoming"?"Pendiente":"Hecha"}
+                    </div>
                   </div>
-                  <div className="who">
-                    <div className="n">{a.name}</div>
-                    <div className="svc">{svc?.name} · {svc?.dur}min · {svc?.price}€</div>
-                  </div>
-                  <div className="contact"><div>{a.phone}</div><div style={{color:"var(--muted)",marginTop:3}}>{a.email}</div></div>
-                  <div className={"status "+(a.status==="upcoming"?"up":"dn")}>
-                    {a.status==="upcoming"?"Programada":"Completada"}
-                  </div>
-                  <div className="actions">
-                    {a.status==="upcoming" && <button title="Marcar completada" onClick={()=>markDone(a.id)}><I.check/></button>}
-                    <button title="Llamar" onClick={()=>alert("Llamar a "+a.phone)}><I.phone/></button>
-                    <button className="del" title="Eliminar" onClick={()=>del(a.id)}><I.trash/></button>
+                  <div className="appt-name">{a.name}</div>
+                  <div className="appt-detail">{svc?.name} · {svc?.dur}′ · {svc?.price}€</div>
+                  <div className="appt-detail">{a.phone} · {a.email}</div>
+                  <div className="appt-actions">
+                    {a.status==="upcoming" && <button className="appt-btn green" onClick={()=>markDone(a.id)}><I.check/> Hecho</button>}
+                    <button className="appt-btn blue" onClick={()=>alert("Llamar a "+a.phone)}><I.phone/> Llamar</button>
+                    <button className="appt-btn red" onClick={()=>del(a.id)}><I.trash/></button>
                   </div>
                 </div>
               );
-            })}
+            })}</div>}
           </div>
         ) : (
           <AdminCalendar appts={appts} onMarkDone={markDone} onDelete={del}/>
@@ -650,15 +614,15 @@ function AdminCalendar({ appts, onMarkDone, onDelete }) {
   const selList = selDate ? appts.filter(a=>a.date===keyDate(selDate)).sort((a,b)=>a.time.localeCompare(b.time)) : [];
 
   return (
-    <div className="appts" style={{padding:18}}>
-      <div className="appts-head" style={{padding:"0 0 14px"}}>
-        <h3>{MONTH_ES[cursor.getMonth()]} {cursor.getFullYear()}</h3>
-        <div className="cal-nav" style={{display:"flex",gap:6}}>
-          <button onClick={()=>setCursor(new Date(cursor.getFullYear(), cursor.getMonth()-1, 1))} style={{width:36,height:36,border:"1px solid var(--line-2)"}}>{I.chev("L")}</button>
-          <button onClick={()=>setCursor(new Date(cursor.getFullYear(), cursor.getMonth()+1, 1))} style={{width:36,height:36,border:"1px solid var(--line-2)"}}>{I.chev("R")}</button>
+    <div style={{padding:12}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
+        <h3 style={{margin:0,fontFamily:"'Bodoni Moda',serif",fontWeight:500,fontSize:22}}>{MONTH_ES[cursor.getMonth()]} {cursor.getFullYear()}</h3>
+        <div style={{display:"flex",gap:6}}>
+          <button onClick={()=>setCursor(new Date(cursor.getFullYear(), cursor.getMonth()-1, 1))} style={{width:40,height:40,border:"1px solid var(--line-2)",borderRadius:8,background:"transparent",color:"var(--cream)",fontSize:16}}>{I.chev("L")}</button>
+          <button onClick={()=>setCursor(new Date(cursor.getFullYear(), cursor.getMonth()+1, 1))} style={{width:40,height:40,border:"1px solid var(--line-2)",borderRadius:8,background:"transparent",color:"var(--cream)",fontSize:16}}>{I.chev("R")}</button>
         </div>
       </div>
-      <div className="cal-grid" style={{marginBottom:24}}>
+      <div className="cal-grid" style={{marginBottom:20}}>
         {DOW_ES.map(d=><div key={d} className="cal-dow">{d}</div>)}
         {days.map((c,i)=>{
           if(!c.d) return <div key={i} className="cal-day other"></div>;
@@ -668,36 +632,40 @@ function AdminCalendar({ appts, onMarkDone, onDelete }) {
           return (
             <div key={i}
               className={"cal-day"+(isSel?" selected":"")+(isToday?" today":"")}
-              style={{cursor:"pointer",minHeight:80,aspectRatio:"auto",alignItems:"start",justifyContent:"start",padding:"6px 8px",display:"flex",flexDirection:"column",gap:4}}
+              style={{cursor:"pointer",minHeight:44,aspectRatio:"auto",alignItems:"center",justifyContent:"center",padding:"4px",display:"flex",flexDirection:"column",gap:2}}
               onClick={()=>setSelDate(new Date(c.d))}>
-              <span className="num" style={{fontSize:16}}>{c.d.getDate()}</span>
-              {n>0 && <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:10,letterSpacing:".1em",color:isSel?"var(--ink)":"var(--cream-2)"}}>{n} cita{n>1?"s":""}</span>}
-              {n>0 && <div style={{display:"flex",gap:2,marginTop:"auto"}}>{[...Array(Math.min(n,4))].map((_,j)=><span key={j} style={{width:5,height:5,borderRadius:"50%",background:isSel?"var(--ink)":"var(--accent-2)"}}/>)}</div>}
+              <span className="num" style={{fontSize:15}}>{c.d.getDate()}</span>
+              {n>0 && <span style={{fontSize:10,color:isSel?"var(--ink)":"var(--accent-2)",fontWeight:600}}>{n}</span>}
             </div>
           );
         })}
       </div>
-      <div style={{borderTop:"1px solid var(--line)",paddingTop:18}}>
-        <h4 style={{fontFamily:"'Bodoni Moda',serif",fontWeight:500,fontSize:20,margin:"0 0 14px"}}>
+      <div style={{borderTop:"1px solid var(--line)",paddingTop:14}}>
+        <h4 style={{fontFamily:"'Bodoni Moda',serif",fontWeight:500,fontSize:20,margin:"0 0 12px"}}>
           {selDate ? prettyDate(selDate) : "Selecciona un día"}
         </h4>
         {selList.length===0 ? (
-          <div className="empty" style={{padding:"30px 0"}}>Sin citas este día.</div>
-        ) : selList.map(a=>{
+          <div className="empty" style={{padding:"24px 0"}}>Sin citas este día.</div>
+        ) : <div className="appt-list">{selList.map(a=>{
           const svc=SERVICES.find(s=>s.id===a.service);
           return (
-            <div key={a.id} className={"appt"+(a.status==="done"?" done":"")} style={{borderTop:"1px solid var(--line)",padding:"14px 0"}}>
-              <div className="when"><div className="d" style={{fontSize:18}}>{a.time}</div></div>
-              <div className="who"><div className="n">{a.name}</div><div className="svc">{svc?.name}</div></div>
-              <div className="contact">{a.phone}</div>
-              <div className={"status "+(a.status==="upcoming"?"up":"dn")}>{a.status==="upcoming"?"Programada":"Completada"}</div>
-              <div className="actions">
-                {a.status==="upcoming" && <button onClick={()=>onMarkDone(a.id)}><I.check/></button>}
-                <button className="del" onClick={()=>onDelete(a.id)}><I.trash/></button>
+            <div key={a.id} className={"appt-card"+(a.status==="done"?" done":"")}>
+              <div className="appt-row-top">
+                <div className="appt-time">{a.time}</div>
+                <div className={"appt-badge "+(a.status==="upcoming"?"up":"dn")}>
+                  {a.status==="upcoming"?"Pendiente":"Hecha"}
+                </div>
+              </div>
+              <div className="appt-name">{a.name}</div>
+              <div className="appt-detail">{svc?.name}</div>
+              <div className="appt-detail">{a.phone}</div>
+              <div className="appt-actions">
+                {a.status==="upcoming" && <button className="appt-btn green" onClick={()=>onMarkDone(a.id)}><I.check/> Hecho</button>}
+                <button className="appt-btn red" onClick={()=>onDelete(a.id)}><I.trash/></button>
               </div>
             </div>
           );
-        })}
+        })}</div>}
       </div>
     </div>
   );
